@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Media;
+using System.IO;
 
 namespace SpeedCubeTimer
 {
@@ -20,16 +22,6 @@ namespace SpeedCubeTimer
 
         //initialize variables
         String scramble;
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            tmrUpdatesPerSecond.Start();
-            scramble = Scrambler();
-            txtScramble.Text = scramble;
-            
-        }
-
-        //initialize more variables
         Stopwatch stpTimer = new Stopwatch();
         bool blTimer = false;
         int intSolves = 0;
@@ -37,8 +29,27 @@ namespace SpeedCubeTimer
         List<string> lstScrambles = new List<string>();
         List<TimeSpan> lstTimes = new List<TimeSpan>();
         String Best = "100000000";
-        
-        
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            tmrUpdatesPerSecond.Start();
+            scramble = Scrambler();
+            txtScramble.Text = scramble;
+
+            //load
+            TextReader tr = new StreamReader("SpeedCubeTimer.Properties.Resources.Times");
+
+            //Read The Text
+            Best = tr.ReadLine();
+            txtBest.Text = tr.ReadLine();
+
+            //close the stream
+            tr.Close();
+        }
+
+
+
+
 
         //click button
         private void btnStart_Click(object sender, EventArgs e)
@@ -143,6 +154,17 @@ namespace SpeedCubeTimer
 
                 intSolves++;
             }
+
+            TextWriter tw = new StreamWriter("SpeedCubeTimer.Properties.Resources.Times");
+
+            // write lines of text to the file
+            tw.WriteLine(Best);
+            tw.WriteLine(txtBest.Text);
+            
+
+            // close the stream     
+            tw.Close();
+
         }
 
   
